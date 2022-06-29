@@ -5,33 +5,117 @@
         </div>
     </div>
 
-    <div class="row mt-1" style="height:80px;">
-        <div class="col-3 d-none col-md-3 d-md-block"></div>
+    <div class="row mt-1">
+        <div class="col-sm-3">&nbsp;</div>
 
-        <div class="col-12 col-md-6 bg-success d-flex justify-content-center align-items-center text-light h3">
-            <div class="col-sm-8">
-                <input [(ngModel)]="newTask" type="text" value="" class="col-7 form-control" style="width:100%;">
-            </div>
-            <div class="col-sm-1">&nbsp;</div>
-            <div class="col-sm-3" style="text-align: center;">
-                <button (click)="addToList()" class="btn btn-light text-success">
-                    ADD TASK
-                </button>
-            </div>
+        <div class="col-sm-6">
+            <mat-card>
+                <mat-card-header>
+                    <mat-card-title><h2>Add To Do</h2></mat-card-title>
+                </mat-card-header>
+                
+                <mat-card-content>
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <mat-form-field class="full-width">
+                                <mat-label>
+                                    Title of Task <span class="required-field-asterisk">*</span>  
+                                </mat-label>
+                                <input matInput
+                                    id="title"
+                                    name="title"
+                                    [(ngModel)]="newTask.title"
+                                />
+                            </mat-form-field>
+                        </div>
+                    </div>
+        
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <mat-form-field class="full-width">
+                                <mat-label>
+                                    Description of Task
+                                </mat-label>
+                                <input matInput
+                                    id="description"
+                                    name="description"
+                                    [(ngModel)]="newTask.description"
+                                />
+                            </mat-form-field>
+                        </div>
+                    </div>
+        
+                    <div class="row">
+                        <div class="col-sm-12" style="text-align: center;">
+                            <button mat-raised-button id="addBtn" color="primary" (click)="addToList()">
+                                Add To List
+                            </button>
+                        </div>
+                    </div>
+                </mat-card-content>
+            </mat-card>
         </div>
 
-        <div class="col-3 d-none col-md-3 d-md-block"></div>
+        <div class="col-sm-3">&nbsp;</div>
     </div>
 
-    <div *ngFor="let x of items; let index = index;" class="row mt-1" style="height:100px;">
-        <div class="col-3 d-none col-md-3 d-md-block"></div>
+    <div>&nbsp;</div>
 
-        <div class="col-12 col-md-6 bg-success d-flex justify-content-center align-items-center text-light h3">
-            <div class="col-9 text-light h3">{{x}}</div>
+    <div class="row">
+        <div class="col-sm-3">&nbsp;</div>
 
-            <input (click)="deleteTask(index)" type="button" value="Delete" class="col-2 btn btn-danger">
+        <div class="col-sm-6">
+            <mat-card>
+                <mat-card-header>
+                    <mat-card-title><h2>To Do List</h2></mat-card-title>
+                </mat-card-header>
+
+                <mat-card-content>
+                    <div *ngFor="let task of tasks">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <span *ngIf="task.done === false">
+                                    <mat-checkbox (change)="taskDone($event)" value="{{ task.index }}">
+                                        {{ task.title }}
+                                    </mat-checkbox>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </mat-card-content>
+            </mat-card>
         </div>
-            
-        <div class="col-3 d-none col-md-3 d-md-block"></div>
+                
+        <div class="col-sm-3">&nbsp;</div>
+    </div>
+
+    <div>&nbsp;</div>
+
+    <div class="row">
+        <div class="col-sm-3">&nbsp;</div>
+
+        <div class="col-sm-6">
+            <mat-card>
+                <mat-card-header>
+                    <mat-card-title><h2>Completed List</h2></mat-card-title>
+                </mat-card-header>
+
+                <mat-card-content>
+                    <div *ngFor="let task of tasks">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <span *ngIf="task.done === true" class="strike">
+                                    <mat-checkbox (change)="taskUndone($event)" value="{{ task.index }}" checked="checked">
+                                        {{ task.title }}
+                                    </mat-checkbox>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </mat-card-content>
+            </mat-card>
+        </div>
+                
+        <div class="col-sm-3">&nbsp;</div>
     </div>
 </div>

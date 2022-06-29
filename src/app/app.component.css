@@ -1,0 +1,11 @@
+.required-field-asterisk {
+    color: red;
+}
+
+.full-width {
+    width: 100%;
+}
+
+.strike {
+    text-decoration: line-through;
+}
