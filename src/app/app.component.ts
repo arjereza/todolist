@@ -22,8 +22,10 @@ export class AppComponent {
     ];
 
     public newTask: any = {
+        index: '',
         title: '',
-        description: ''
+        description: '',
+        done: ''
     };
   
     public addToList() {
@@ -48,8 +50,10 @@ export class AppComponent {
     }
 
     initNewTask() {
+        this.newTask.index = '';
         this.newTask.title = '';
         this.newTask.description = '';
+        this.newTask.done = '';
     }
 
     taskDone(event) {
