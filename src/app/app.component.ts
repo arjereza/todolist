@@ -1,11 +1,53 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { Router, NavigationEnd, ActivatedRoute } from '@angular/router';
+
+import { filter, map, mergeMap } from 'rxjs/operators';
+import { MatDialog } from '@angular/material';
+
+import { DialogComponent } from './dialog/dialog.component';
   
 @Component({
     selector: 'app-root',
     templateUrl: './app.component.html',
     styleUrls: ['./app.component.css']
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
+
+    constructor(
+        public dialog: MatDialog,
+        private router: Router,
+        private route: ActivatedRoute
+    ) { }
+
+    ngOnInit(): void {
+        this.router.events.pipe(
+            // router navigation end
+            filter((event) => event instanceof NavigationEnd),
+            // now query the activated route
+            map(() => this.rootRoute(this.route)),
+            filter((route: ActivatedRoute) => route.outlet === 'primary'),
+        ).subscribe((route: ActivatedRoute) => {
+            const index = route.snapshot.paramMap.get('task');
+            const exists = this.tasks.find(obj => {
+                if (obj.index === index) {
+                    return true;
+                } else {
+                    return false;
+                }
+            });
+
+            if (exists && index !== null) {
+                this.openDialog(index);
+            }
+        });
+    }
+
+    private rootRoute(route: ActivatedRoute): ActivatedRoute {
+        while (route.firstChild) {
+          route = route.firstChild;
+        }
+        return route;
+      }
   
     public tasks: Array<any> = [
         {
@@ -35,7 +77,7 @@ export class AppComponent {
             alert('Title is required.')
         }
         else {
-            const idx = this.tasks.length + 1;
+            const idx = this.tasks.length;
             const addTask = {
                 index: idx.toString(),
                 title: this.newTask.title,
@@ -43,10 +85,18 @@ export class AppComponent {
                 done: false
             };
 
-            this.tasks.push(addTask);
+            this.tasks.unshift(addTask);
 
             this.initNewTask();
         }
+    }
+
+    countTasks(): number {
+        const count = this.tasks.reduce(function (n, obj) {
+            return n + (obj.done == false);
+        }, 0);
+
+        return count;
     }
 
     initNewTask() {
@@ -58,7 +108,7 @@ export class AppComponent {
 
     taskDone(event) {
         const index = event.source.value;
-        const task = this.tasks.find(obj => {
+        this.tasks.find(obj => {
             if (obj.index === index) {
                 obj.done = true;
             }
@@ -67,10 +117,36 @@ export class AppComponent {
 
     taskUndone(event) {
         const index = event.source.value;
-        const task = this.tasks.find(obj => {
+        this.tasks.find(obj => {
             if (obj.index === index) {
                 obj.done = false;
             }
+        });
+    }
+
+    viewTask(index) {
+        this.openDialog(index);
+    }
+
+    openDialog(index: any): void {
+        const task = this.tasks.find(obj => {
+            return obj.index === index;
+        });
+
+        const dialogRef = this.dialog.open(DialogComponent, {
+            width: '75%',
+            data: {
+                item: task 
+            },
+            disableClose: true,
+            autoFocus: false,
+            position: {
+                top: '10%'
+            }
+        });
+
+        dialogRef.afterClosed().subscribe(result => {
+            // Nothing
         });
     }
 }
